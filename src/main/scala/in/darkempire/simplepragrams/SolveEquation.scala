@@ -1,6 +1,7 @@
 package in.darkempire.simplepragrams
 
-import java.lang
+import java.{lang, util}
+import scala.annotation.tailrec
 import scala.util.control.Breaks
 
 /**
@@ -11,22 +12,47 @@ import scala.util.control.Breaks
  */
 class SolveEquation(expression: String) {
 
+  private val space = " "
+
   def getValueOfX: Double = ???
 
   def splitExpr: Array[String] = expression.split("=")
+
+  def solve(): Double = {
+    var result: Double = 0.0
+    // if both LSH and RHS contains X then its unable to solve the equation
+    findX match {
+      case 0 => println("Unable to solve the equation as both side has X")
+      case -1 => // solving for LHS as X
+        val solvableExpr = splitExpr.last.split(space).toList.filter(!_.isEmpty)
+        result = PostfixOperation.solveExpr(solvableExpr)
+        val lhsExpr = splitExpr.head.split(space).toList.filter(!_.isEmpty)
+        result = PostfixOperation.solveExprForX(lhsExpr, result)
+      case 1 => // solving for RHS as X
+        val solvableExpr = splitExpr.head.split(space).toList.filter(!_.isEmpty)
+        result = PostfixOperation.solveExpr(solvableExpr)
+        val rhsExpr = splitExpr.last.split(space).toList.filter(!_.isEmpty)
+        result = PostfixOperation.solveExprForX(rhsExpr, result)
+      case _ => println("Invalid value")
+    }
+    result
+  }
+
+  def findX: Int = {
+    if ((splitExpr.head.contains("x") || splitExpr.head.contains("X")) &&
+      splitExpr.last.contains("x") || splitExpr.last.contains("X")) {
+      0
+    } else if (splitExpr.head.contains("x") || splitExpr.head.contains("X")) {
+      -1 // represents LHS
+    } else {
+      1 // represents RHS
+    }
+  }
 }
 
 object SolveEquation {
-  def solve(expr: String): Double = {
-    val exprList = expr.split(" ").toList.filter(!_.isEmpty)
-    println(exprList)
-    if(checkValidExpression(exprList)) {
-      println(solveExprList(exprList))
-    } else
-      println("Expression is NOT valid")
-    0.0
-  }
 
+  @tailrec
   @throws(classOf[NumberFormatException])
   def solveExprList(exprList: List[String]): Double = {
     if (exprList.length < 3)
@@ -41,6 +67,10 @@ object SolveEquation {
       }
       solveExprList(result.toString()::exprList.drop(3))
     }
+  }
+
+  def solveExprForX: (String, String, Double) = {
+    ("X", "+", 0.0)
   }
 
   /**

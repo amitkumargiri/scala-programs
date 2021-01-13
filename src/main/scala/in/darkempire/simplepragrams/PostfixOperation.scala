@@ -1,5 +1,6 @@
 package in.darkempire.simplepragrams
 
+import java.util
 import java.util.Stack
 
 /**
@@ -20,7 +21,7 @@ class PostfixOperation(expr: List[String]) {
       else if (ch == ")") {
         while (!stack.isEmpty && stack.peek() != "(") result.push(stack.pop())
         stack.pop()
-      } else if (! isOperator(ch))
+      } else if (! PostfixOperation.isOperator(ch))
         result.push(ch)
       else {
         while (!stack.isEmpty && precedence(ch) <= precedence(stack.peek()))
@@ -43,8 +44,6 @@ class PostfixOperation(expr: List[String]) {
     sb.toString()
   }
 
-  private def isOperator(op: String): Boolean = List("+", "-", "*", "/", "^").contains(op)
-
   private def precedence(op: String): Int = op match {
     case "+" | "-" => 1
     case "*" | "/" => 2
@@ -56,10 +55,36 @@ class PostfixOperation(expr: List[String]) {
 object PostfixOperation {
 
   @throws(classOf[InvalidExpression])
+  def solveExprForX(list: List[String], rhsResult: Double): Double = {
+    var result = rhsResult
+    val pf = new PostfixOperation(list)
+    val exprStack = pf.convertToPostfix
+    val opStack = new util.Stack[String]
+    while (!exprStack.isEmpty) {
+      val exp = exprStack.pop()
+      if (isOperator(exp))
+        opStack.push(exp)
+      else if (exp == "X") {
+        // do nothing
+      } else {
+        val operator = opStack.pop()
+        val value = exp.toDouble
+        // reversing the operator as moving from LHS to RHS
+        operator match {
+          case "+" => result = result - value
+          case "-" => result = result + value
+          case "*" => result = result / value
+          case "/" => result = result * value
+        }
+      }
+    }
+    result
+  }
+
+  @throws(classOf[InvalidExpression])
   def solveExpr(list: List[String]): Double = {
     val pf = new PostfixOperation(list)
     val exprStack = pf.convertToPostfix
-    println(exprStack.toString)
     val tempStack = new Stack[String]
     while (!exprStack.isEmpty) {
       tempStack.push(exprStack.pop())
@@ -67,7 +92,7 @@ object PostfixOperation {
     val solveStack = new Stack[Double]
     while (!tempStack.isEmpty) {
       val exp = tempStack.pop()
-      if (pf.isOperator(exp)) {
+      if (PostfixOperation.isOperator(exp)) {
         val val1 = solveStack.pop()
         val val2 = solveStack.pop()
         exp match {
@@ -82,4 +107,6 @@ object PostfixOperation {
     }
     solveStack.pop();
   }
+
+  def isOperator(op: String): Boolean = List("+", "-", "*", "/", "^").contains(op)
 }

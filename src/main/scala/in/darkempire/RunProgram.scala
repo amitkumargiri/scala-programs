@@ -11,7 +11,8 @@ object RunProgram {
 
   /** Call the programs from various packages to run a specific program. */
   def main(args: Array[String]): Unit = {
-    val exprList = List("(", "1000", "-", "500", "+", "500", ")", "*", "4")
-    println(PostfixOperation.solveExpr(exprList))
+    val exprList = "X + 2 = 25"
+    val eq = new SolveEquation(exprList)
+    println(eq.solve())
   }
 }
