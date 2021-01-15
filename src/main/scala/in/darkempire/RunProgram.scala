@@ -11,8 +11,7 @@ object RunProgram {
 
   /** Call the programs from various packages to run a specific program. */
   def main(args: Array[String]): Unit = {
-    val exprList = "X + 2 = 25"
-    val eq = new SolveEquation(exprList)
-    println(eq.solve())
+    val sol = new SolveEquation("2 * ( X + 100 ) = 200")
+    println(sol.getValueOfX)
   }
 }

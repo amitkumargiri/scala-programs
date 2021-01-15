@@ -1,6 +1,5 @@
 package in.darkempire.simplepragrams
 
-import java.util
 import java.util.Stack
 
 /**
@@ -9,8 +8,20 @@ import java.util.Stack
  */
 case class InvalidExpression(message: String) extends Exception(message)
 
+/**
+ * The postfix operation class.
+ *
+ * @param expr
+ * @author amitkumargiri #github.com
+ */
 class PostfixOperation(expr: List[String]) {
 
+  /**
+   * Function to convert the expression to postfix.
+   *
+   * @throws in.darkempire.simplepragrams.InvalidExpression
+   * @return Stack[String]
+   */
   @throws(classOf[InvalidExpression])
   def convertToPostfix: Stack[String] = {
     val result = new Stack[String]
@@ -37,6 +48,10 @@ class PostfixOperation(expr: List[String]) {
     result
   }
 
+  /**
+   * Implicit function to convert Stack[String] to String.
+   * @return String
+   */
   implicit def toPostfix: String = {
     val result = convertToPostfix
     val sb = new StringBuilder
@@ -44,6 +59,11 @@ class PostfixOperation(expr: List[String]) {
     sb.toString()
   }
 
+  /**
+   * Find the precedence of the operator. Solve the expression using BODMASS.
+   * @param op Operator
+   * @return Integer
+   */
   private def precedence(op: String): Int = op match {
     case "+" | "-" => 1
     case "*" | "/" => 2
@@ -54,59 +74,11 @@ class PostfixOperation(expr: List[String]) {
 
 object PostfixOperation {
 
-  @throws(classOf[InvalidExpression])
-  def solveExprForX(list: List[String], rhsResult: Double): Double = {
-    var result = rhsResult
-    val pf = new PostfixOperation(list)
-    val exprStack = pf.convertToPostfix
-    val opStack = new util.Stack[String]
-    while (!exprStack.isEmpty) {
-      val exp = exprStack.pop()
-      if (isOperator(exp))
-        opStack.push(exp)
-      else if (exp == "X") {
-        // do nothing
-      } else {
-        val operator = opStack.pop()
-        val value = exp.toDouble
-        // reversing the operator as moving from LHS to RHS
-        operator match {
-          case "+" => result = result - value
-          case "-" => result = result + value
-          case "*" => result = result / value
-          case "/" => result = result * value
-        }
-      }
-    }
-    result
-  }
-
-  @throws(classOf[InvalidExpression])
-  def solveExpr(list: List[String]): Double = {
-    val pf = new PostfixOperation(list)
-    val exprStack = pf.convertToPostfix
-    val tempStack = new Stack[String]
-    while (!exprStack.isEmpty) {
-      tempStack.push(exprStack.pop())
-    }
-    val solveStack = new Stack[Double]
-    while (!tempStack.isEmpty) {
-      val exp = tempStack.pop()
-      if (PostfixOperation.isOperator(exp)) {
-        val val1 = solveStack.pop()
-        val val2 = solveStack.pop()
-        exp match {
-          case "+" => solveStack.push(val1 + val2)
-          case "-" => solveStack.push(val2 - val1)
-          case "*" => solveStack.push(val1 * val2)
-          case "/" => solveStack.push(val2 / val1)
-        }
-      } else {
-        solveStack.push(exp.toDouble)
-      }
-    }
-    solveStack.pop();
-  }
-
+  /**
+   * Check if the given string is operator or not.
+   *
+   * @param op Operator
+   * @return Boolean
+   */
   def isOperator(op: String): Boolean = List("+", "-", "*", "/", "^").contains(op)
 }
