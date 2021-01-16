@@ -11,8 +11,9 @@ case class InvalidExpression(message: String) extends Exception(message)
 /**
  * The postfix operation class.
  *
- * @param expr
+ * @param expr Expression
  * @author amitkumargiri #github.com
+ * @site http://darkempire.in/codesolution/scala/postfixoperation
  */
 class PostfixOperation(expr: List[String]) {
 

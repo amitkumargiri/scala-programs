@@ -11,6 +11,8 @@ import scala.util.control.Breaks
  * Find the value of X, for any given expression. E.g. 5x + 30 = 55 or 12x0 - 200 = 1000
  *
  * @param expression
+ * @author amitkumargiri #github.com
+ * @site http://darkempire.in/codesolution/scala/solveequationx
  */
 class SolveEquation(expression: String) {
 
