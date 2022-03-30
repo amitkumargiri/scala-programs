@@ -1,3 +1,4 @@
+
 version := "0.1"
 
 lazy val root = (project in file(".")).
@@ -9,4 +10,7 @@ lazy val root = (project in file(".")).
     name := "scala-programs"
   )
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.2" % Test
+libraryDependencies ++= Seq(
+  "com.h2database" % "h2" % "2.1.210",
+  "org.scalatest" %% "scalatest" % "3.2.2" % Test
+)
